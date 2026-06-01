@@ -1,8 +1,8 @@
 use std::io::Read;
 use std::net::{SocketAddr, TcpListener, TcpStream};
 
-use super::{BUFSIZE, INADDR_ANY, PORT};
 use crate::Error;
+use crate::{BUFSIZE, INADDR_ANY, PORT};
 
 fn handle_client(mut stream: TcpStream, buf: &mut [u8]) -> Result<(), Error> {
     let len = stream.read(buf)?;

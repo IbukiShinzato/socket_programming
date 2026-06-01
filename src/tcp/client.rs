@@ -1,8 +1,8 @@
 use std::io::Write;
 use std::net::{SocketAddr, TcpStream};
 
-use super::{LOCALHOST, PORT};
 use crate::Error;
+use crate::{LOCALHOST, PORT};
 
 pub fn run() -> Result<(), Error> {
     let buf = "Hello, Socket Programming\n";
