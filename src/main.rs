@@ -28,9 +28,7 @@ fn main() -> Result<(), Error> {
         ("tcp", "server") => tcp::server::run(),
         ("tcp", "client") => tcp::client::run(),
         ("udp", "server") => udp::server::run(),
-        ("udp", "client") => {
-            return Err(invalid_args_error());
-        }
+        ("udp", "client") => udp::client::run(),
         _ => {
             return Err(invalid_args_error());
         }
