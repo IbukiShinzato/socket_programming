@@ -1,16 +1,19 @@
-use std::io::Read;
+use std::io::{Read, Write};
 use std::net::{SocketAddr, TcpListener, TcpStream};
 
 use crate::Error;
 use crate::{BUFSIZE, INADDR_ANY, PORT};
 
 fn handle_client(mut stream: TcpStream, buf: &mut [u8]) -> Result<(), Error> {
-    let len = stream.read(buf)?;
-    let message = str::from_utf8(&buf[..len])?;
+    loop {
+        let len = stream.read(buf)?;
+        if len == 0 {
+            return Ok(());
+        }
 
-    print!("{message}");
-
-    Ok(())
+        stream.write_all(&buf[..len])?;
+        print!("recv: {}", str::from_utf8(&buf[..len])?);
+    }
 }
 
 pub fn run() -> Result<(), Error> {
@@ -19,7 +22,7 @@ pub fn run() -> Result<(), Error> {
     let listener = TcpListener::bind(addr)?;
     let mut buf = [0; BUFSIZE];
 
-    if let Some(stream) = listener.incoming().next() {
+    for stream in listener.incoming() {
         handle_client(stream?, &mut buf)?;
     }
 
