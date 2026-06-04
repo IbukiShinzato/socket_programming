@@ -20,7 +20,7 @@ fn handle_client(stream: &mut TcpStream, buf: &mut [u8]) -> Result<bool, Error> 
     Ok(true)
 }
 
-pub fn run() -> Result<(), Error> {
+pub fn select_server() -> Result<(), Error> {
     let addr = SocketAddr::from((INADDR_ANY, PORT));
     let listener = TcpListener::bind(addr)?;
 
