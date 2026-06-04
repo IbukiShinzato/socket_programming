@@ -42,7 +42,7 @@ fn main() -> Result<(), Error> {
             validate_tcp_server_args(&args)?;
             match args[2].as_str() {
                 "select" => tcp::server::select_server(),
-                // "thread" => tcp::server::thread_server(),
+                "thread" => tcp::server::thread_server(),
                 _ => {
                     return Err(invalid_args_error());
                 }

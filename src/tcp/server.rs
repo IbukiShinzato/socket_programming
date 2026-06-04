@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use std::io::{Read, Write};
 use std::net::{SocketAddr, TcpListener, TcpStream};
 use std::os::fd::{AsFd, AsRawFd, RawFd};
+use std::thread;
 
 use nix::sys::select::{FdSet, select};
 
@@ -82,5 +83,27 @@ pub fn select_server() -> Result<(), Error> {
         for fd in closed_fds {
             tcp_map.remove(&fd);
         }
+    }
+}
+
+pub fn thread_server() -> Result<(), Error> {
+    let addr = SocketAddr::from((INADDR_ANY, PORT));
+    let listener = TcpListener::bind(addr)?;
+
+    loop {
+        let (mut stream, _addr) = listener.accept()?;
+        thread::spawn(move || {
+            let mut buf = [0; BUFSIZE];
+            loop {
+                match handle_client(&mut stream, &mut buf) {
+                    Ok(true) => continue,
+                    Ok(false) => break,
+                    Err(e) => {
+                        eprintln!("{e}");
+                        break;
+                    }
+                }
+            }
+        });
     }
 }
